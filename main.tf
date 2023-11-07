@@ -175,13 +175,15 @@ resource "aws_instance" "nat_1" {
   source_dest_check           = false
   subnet_id                   = aws_subnet.public_1.id
   user_data_replace_on_change = true
-  user_data                   = <<EOF
+  user_data = trimspace(
+    <<EOF
     #!/bin/bash
     sudo sysctl -w net.ipv4.ip_forward=1
     sudo /sbin/iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
     sudo yum install iptables-services
     sudo service iptables save
   EOF
+  )
   tags = {
     "Name" = "${var.project}-${var.environment}-nat-instance-1"
   }
@@ -195,13 +197,15 @@ resource "aws_instance" "nat_2" {
   source_dest_check           = false
   subnet_id                   = aws_subnet.public_2.id
   user_data_replace_on_change = true
-  user_data                   = <<EOF
+  user_data = trimspace(
+    <<EOF
     #!/bin/bash
     sudo sysctl -w net.ipv4.ip_forward=1
     sudo /sbin/iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
     sudo yum install iptables-services
     sudo service iptables save
   EOF
+  )
   tags = {
     "Name" = "${var.project}-${var.environment}-nat-instance-2"
   }
@@ -215,13 +219,15 @@ resource "aws_instance" "nat_3" {
   source_dest_check           = false
   subnet_id                   = aws_subnet.public_3.id
   user_data_replace_on_change = true
-  user_data                   = <<EOF
+  user_data = trimspace(
+    <<EOF
     #!/bin/bash
     sudo sysctl -w net.ipv4.ip_forward=1
     sudo /sbin/iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
     sudo yum install iptables-services
     sudo service iptables save
   EOF
+  )
   tags = {
     "Name" = "${var.project}-${var.environment}-nat-instance-3"
   }
