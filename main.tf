@@ -184,7 +184,7 @@ resource "aws_instance" "nat_1" {
     sudo service iptables save
   EOF
   )
-    
+
   metadata_options {
     http_endpoint = "enabled"
     http_tokens   = "required"
@@ -212,7 +212,7 @@ resource "aws_instance" "nat_2" {
     sudo service iptables save
   EOF
   )
-    
+
   metadata_options {
     http_endpoint = "enabled"
     http_tokens   = "required"
@@ -240,7 +240,7 @@ resource "aws_instance" "nat_3" {
     sudo service iptables save
   EOF
   )
-    
+
   metadata_options {
     http_endpoint = "enabled"
     http_tokens   = "required"
