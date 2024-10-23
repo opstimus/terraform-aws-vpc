@@ -255,7 +255,7 @@ resource "aws_instance" "nat_3" {
 resource "aws_nat_gateway" "gateway_1" {
   count             = var.nat == "gateway" ? 1 : 0
   connectivity_type = "public"
-  allocation_id     = var.reserve_nat_eip ? aws_eip.nat_reserved_1.id : aws_eip.nat_dynamic_1.id
+  allocation_id     = aws_eip.nat_1.allocation_id
   subnet_id         = aws_subnet.public_1.id
   tags = {
     "Name" = "${var.project}-${var.environment}-1"
@@ -265,7 +265,7 @@ resource "aws_nat_gateway" "gateway_1" {
 resource "aws_nat_gateway" "gateway_2" {
   count             = var.nat == "gateway" ? 1 : 0
   connectivity_type = "public"
-  allocation_id     = var.reserve_nat_eip ? aws_eip.nat_reserved_2.id : aws_eip.nat_dynamic_2.id
+  allocation_id     = aws_eip.nat_2.allocation_id
   subnet_id         = aws_subnet.public_2.id
   tags = {
     "Name" = "${var.project}-${var.environment}-2"
@@ -275,12 +275,13 @@ resource "aws_nat_gateway" "gateway_2" {
 resource "aws_nat_gateway" "gateway_3" {
   count             = var.nat == "gateway" ? 1 : 0
   connectivity_type = "public"
-  allocation_id     = var.reserve_nat_eip ? aws_eip.nat_reserved_3.id : aws_eip.nat_dynamic_3.id
+  allocation_id     = aws_eip.nat_3.allocation_id
   subnet_id         = aws_subnet.public_3.id
   tags = {
     "Name" = "${var.project}-${var.environment}-3"
   }
 }
+
 
 resource "aws_route" "private_1" {
   route_table_id         = aws_route_table.private_1.id
@@ -303,96 +304,48 @@ resource "aws_route" "private_3" {
   network_interface_id   = var.nat == "instance" ? aws_instance.nat_3[0].primary_network_interface_id : null
 }
 
-resource "aws_eip" "nat_reserved_1" {
+resource "aws_eip" "nat_1" {
+  count = var.reserve_nat_eip ? 3 : 0
   tags = {
-    Name = "${var.project}-${var.environment}-nat-reserved-1"
+    "Name" = "${var.project}-${var.environment}-nat-1"
   }
-
   lifecycle {
-    prevent_destroy = true
+    prevent_destroy = var.reserve_nat_eip
   }
 }
 
-resource "aws_eip" "nat_reserved_2" {
+resource "aws_eip" "nat_2" {
   tags = {
-    Name = "${var.project}-${var.environment}-nat-reserved-2"
+    "Name" = "${var.project}-${var.environment}-nat-2"
   }
-
   lifecycle {
-    prevent_destroy = true
+    prevent_destroy = var.reserve_nat_eip
   }
 }
 
-resource "aws_eip" "nat_reserved_3" {
+resource "aws_eip" "nat_3" {
   tags = {
-    Name = "${var.project}-${var.environment}-nat-reserved-3"
+    "Name" = "${var.project}-${var.environment}-nat-3"
   }
-
   lifecycle {
-    prevent_destroy = true
+    prevent_destroy = var.reserve_nat_eip
   }
 }
-
-resource "aws_eip" "nat_dynamic_1" {
-  tags = {
-    Name = "${var.project}-${var.environment}-nat-dynamic-1"
-  }
-}
-
-resource "aws_eip" "nat_dynamic_2" {
-  tags = {
-    Name = "${var.project}-${var.environment}-nat-dynamic-2"
-  }
-}
-
-resource "aws_eip" "nat_dynamic_3" {
-  tags = {
-    Name = "${var.project}-${var.environment}-nat-dynamic-3"
-  }
-}
-
-# resource "aws_eip" "nat_1" {
-#   count = var.reserve_nat_eip ? 3 : 0
-#   tags = {
-#     "Name" = "${var.project}-${var.environment}-nat-1"
-#   }
-#   lifecycle {
-#     prevent_destroy = var.reserve_nat_eip
-#   }
-# }
-
-# resource "aws_eip" "nat_2" {
-#   tags = {
-#     "Name" = "${var.project}-${var.environment}-nat-2"
-#   }
-#   lifecycle {
-#     prevent_destroy = var.reserve_nat_eip
-#   }
-# }
-
-# resource "aws_eip" "nat_3" {
-#   tags = {
-#     "Name" = "${var.project}-${var.environment}-nat-3"
-#   }
-#   lifecycle {
-#     prevent_destroy = var.reserve_nat_eip
-#   }
-# }
 
 resource "aws_eip_association" "nat_instance_1" {
   count         = var.nat == "instance" ? 1 : 0
   instance_id   = aws_instance.nat_1[0].id
-  allocation_id = var.reserve_nat_eip ? aws_eip.nat_reserved_1.id : aws_eip.nat_dynamic_1.id
+  allocation_id = aws_eip.nat_1.id
 }
 
 resource "aws_eip_association" "nat_instance_2" {
   count         = var.nat == "instance" ? 1 : 0
   instance_id   = aws_instance.nat_2[0].id
-  allocation_id = var.reserve_nat_eip ? aws_eip.nat_reserved_2.id : aws_eip.nat_dynamic_2.id
+  allocation_id = aws_eip.nat_2.id
 }
 
 resource "aws_eip_association" "nat_instance_3" {
   count         = var.nat == "instance" ? 1 : 0
   instance_id   = aws_instance.nat_3[0].id
-  allocation_id = var.reserve_nat_eip ? aws_eip.nat_reserved_3.id : aws_eip.nat_dynamic_3.id
+  allocation_id = aws_eip.nat_3.id
 }
