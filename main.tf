@@ -305,30 +305,41 @@ resource "aws_route" "private_3" {
 }
 
 resource "aws_eip" "nat_1" {
-  count = var.reserve_nat_eip ? 3 : 0
+  count = 1
   tags = {
     "Name" = "${var.project}-${var.environment}-nat-1"
   }
-  lifecycle {
-    prevent_destroy = var.reserve_nat_eip
+  dynamic "lifecycle" {
+    for_each = var.reserve_nat_eip ? [1] : []
+    content {
+      prevent_destroy = true
+    }
   }
 }
 
 resource "aws_eip" "nat_2" {
+  count = 1
   tags = {
     "Name" = "${var.project}-${var.environment}-nat-2"
   }
-  lifecycle {
-    prevent_destroy = var.reserve_nat_eip
+  dynamic "lifecycle" {
+    for_each = var.reserve_nat_eip ? [1] : []
+    content {
+      prevent_destroy = true
+    }
   }
 }
 
 resource "aws_eip" "nat_3" {
+  count = 1
   tags = {
     "Name" = "${var.project}-${var.environment}-nat-3"
   }
-  lifecycle {
-    prevent_destroy = var.reserve_nat_eip
+  dynamic "lifecycle" {
+    for_each = var.reserve_nat_eip ? [1] : []
+    content {
+      prevent_destroy = true
+    }
   }
 }
 

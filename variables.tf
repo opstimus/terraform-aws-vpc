@@ -53,8 +53,8 @@ variable "private_cidr_3" {
   description = "Private subnet cird"
 }
 
-variable "reserve_nat_eip" {
-  type        = bool
-  default     = false
-  description = "Reserve IP for NAT"
-}
+# variable "reserve_nat_eip" {
+#   type        = bool
+#   default     = false
+#   description = "Reserve IP for NAT"
+# }
