@@ -167,106 +167,22 @@ data "aws_ami" "amazon_linux_2" {
   owners = ["amazon"]
 }
 
-# resource "aws_instance" "nat_1" {
-#   count                       = var.nat == "instance" ? 1 : 0
-#   ami                         = data.aws_ami.amazon_linux_2.id
-#   instance_type               = var.nat_instance_type
-#   vpc_security_group_ids      = [aws_security_group.nat_instance[0].id]
-#   source_dest_check           = false
-#   subnet_id                   = aws_subnet.public_1.id
-#   user_data_replace_on_change = true
-#   user_data = trimspace(
-#     <<EOF
-#     #!/bin/bash
-#     sudo sysctl -w net.ipv4.ip_forward=1
-#     sudo /sbin/iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-#     sudo yum install iptables-services
-#     sudo service iptables save
-#   EOF
-#   )
-
-#   metadata_options {
-#     http_endpoint = "enabled"
-#     http_tokens   = "required"
-#   }
-
-#   tags = {
-#     "Name" = "${var.project}-${var.environment}-nat-instance-1"
-#   }
-# }
-
-# resource "aws_instance" "nat_2" {
-#   count                       = var.nat == "instance" ? 1 : 0
-#   ami                         = data.aws_ami.amazon_linux_2.id
-#   instance_type               = var.nat_instance_type
-#   vpc_security_group_ids      = [aws_security_group.nat_instance[0].id]
-#   source_dest_check           = false
-#   subnet_id                   = aws_subnet.public_2.id
-#   user_data_replace_on_change = true
-#   user_data = trimspace(
-#     <<EOF
-#     #!/bin/bash
-#     sudo sysctl -w net.ipv4.ip_forward=1
-#     sudo /sbin/iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-#     sudo yum install iptables-services
-#     sudo service iptables save
-#   EOF
-#   )
-
-#   metadata_options {
-#     http_endpoint = "enabled"
-#     http_tokens   = "required"
-#   }
-
-#   tags = {
-#     "Name" = "${var.project}-${var.environment}-nat-instance-2"
-#   }
-# }
-
-# resource "aws_instance" "nat_3" {
-#   count                       = var.nat == "instance" ? 1 : 0
-#   ami                         = data.aws_ami.amazon_linux_2.id
-#   instance_type               = var.nat_instance_type
-#   vpc_security_group_ids      = [aws_security_group.nat_instance[0].id]
-#   source_dest_check           = false
-#   subnet_id                   = aws_subnet.public_3.id
-#   user_data_replace_on_change = true
-#   user_data = trimspace(
-#     <<EOF
-#     #!/bin/bash
-#     sudo sysctl -w net.ipv4.ip_forward=1
-#     sudo /sbin/iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-#     sudo yum install iptables-services
-#     sudo service iptables save
-#   EOF
-#   )
-
-#   metadata_options {
-#     http_endpoint = "enabled"
-#     http_tokens   = "required"
-#   }
-
-#   tags = {
-#     "Name" = "${var.project}-${var.environment}-nat-instance-3"
-#   }
-# }
-
-resource "aws_instance" "nat" {
-  count                       = var.nat == "instance" ? 3 : 0
+resource "aws_instance" "nat_1" {
+  count                       = var.nat == "instance" ? 1 : 0
   ami                         = data.aws_ami.amazon_linux_2.id
   instance_type               = var.nat_instance_type
   vpc_security_group_ids      = [aws_security_group.nat_instance[0].id]
   source_dest_check           = false
-  subnet_id                   = aws_subnet.public[count.index].id
+  subnet_id                   = aws_subnet.public_1.id
   user_data_replace_on_change = true
   user_data = trimspace(
     <<EOF
     #!/bin/bash
     sudo sysctl -w net.ipv4.ip_forward=1
     sudo /sbin/iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-    sudo yum install -y iptables-services
+    sudo yum install iptables-services
     sudo service iptables save
-    EOF
+  EOF
   )
 
   metadata_options {
@@ -275,48 +191,94 @@ resource "aws_instance" "nat" {
   }
 
   tags = {
-    Name = "${var.project}-${var.environment}-nat-instance-${count.index + 1}"
+    "Name" = "${var.project}-${var.environment}-nat-instance-1"
   }
 }
 
-# resource "aws_nat_gateway" "gateway_1" {
-#   count             = var.nat == "gateway" ? 1 : 0
-#   connectivity_type = "public"
-#   allocation_id     = aws_eip.nat_1.allocation_id
-#   subnet_id         = aws_subnet.public_1.id
-#   tags = {
-#     "Name" = "${var.project}-${var.environment}-1"
-#   }
-# }
+resource "aws_instance" "nat_2" {
+  count                       = var.nat == "instance" ? 1 : 0
+  ami                         = data.aws_ami.amazon_linux_2.id
+  instance_type               = var.nat_instance_type
+  vpc_security_group_ids      = [aws_security_group.nat_instance[0].id]
+  source_dest_check           = false
+  subnet_id                   = aws_subnet.public_2.id
+  user_data_replace_on_change = true
+  user_data = trimspace(
+    <<EOF
+    #!/bin/bash
+    sudo sysctl -w net.ipv4.ip_forward=1
+    sudo /sbin/iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+    sudo yum install iptables-services
+    sudo service iptables save
+  EOF
+  )
 
-# resource "aws_nat_gateway" "gateway_2" {
-#   count             = var.nat == "gateway" ? 1 : 0
-#   connectivity_type = "public"
-#   allocation_id     = aws_eip.nat_2.allocation_id
-#   subnet_id         = aws_subnet.public_2.id
-#   tags = {
-#     "Name" = "${var.project}-${var.environment}-2"
-#   }
-# }
-
-# resource "aws_nat_gateway" "gateway_3" {
-#   count             = var.nat == "gateway" ? 1 : 0
-#   connectivity_type = "public"
-#   allocation_id     = aws_eip.nat_3.allocation_id
-#   subnet_id         = aws_subnet.public_3.id
-#   tags = {
-#     "Name" = "${var.project}-${var.environment}-3"
-#   }
-# }
-
-resource "aws_nat_gateway" "gateway" {
-  count             = var.nat == "gateway" ? 3 : 0
-  connectivity_type = "public"
-  allocation_id     = var.reserve_nat_eip ? aws_eip.nat_reserved[count.index].id : aws_eip.nat_dynamic[count.index].id
-  subnet_id         = aws_subnet.public[count.index].id
+  metadata_options {
+    http_endpoint = "enabled"
+    http_tokens   = "required"
+  }
 
   tags = {
-    Name = "${var.project}-${var.environment}-nat-gateway-${count.index + 1}"
+    "Name" = "${var.project}-${var.environment}-nat-instance-2"
+  }
+}
+
+resource "aws_instance" "nat_3" {
+  count                       = var.nat == "instance" ? 1 : 0
+  ami                         = data.aws_ami.amazon_linux_2.id
+  instance_type               = var.nat_instance_type
+  vpc_security_group_ids      = [aws_security_group.nat_instance[0].id]
+  source_dest_check           = false
+  subnet_id                   = aws_subnet.public_3.id
+  user_data_replace_on_change = true
+  user_data = trimspace(
+    <<EOF
+    #!/bin/bash
+    sudo sysctl -w net.ipv4.ip_forward=1
+    sudo /sbin/iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+    sudo yum install iptables-services
+    sudo service iptables save
+  EOF
+  )
+
+  metadata_options {
+    http_endpoint = "enabled"
+    http_tokens   = "required"
+  }
+
+  tags = {
+    "Name" = "${var.project}-${var.environment}-nat-instance-3"
+  }
+}
+
+
+resource "aws_nat_gateway" "gateway_1" {
+  count             = var.nat == "gateway" ? 1 : 0
+  connectivity_type = "public"
+  allocation_id     = var.reserve_nat_eip ? aws_eip.nat_reserved_1.id : aws_eip.nat_dynamic_1.id
+  subnet_id         = aws_subnet.public_1.id
+  tags = {
+    "Name" = "${var.project}-${var.environment}-1"
+  }
+}
+
+resource "aws_nat_gateway" "gateway_2" {
+  count             = var.nat == "gateway" ? 1 : 0
+  connectivity_type = "public"
+  allocation_id     = var.reserve_nat_eip ? aws_eip.nat_reserved_2.id : aws_eip.nat_dynamic_2.id
+  subnet_id         = aws_subnet.public_2.id
+  tags = {
+    "Name" = "${var.project}-${var.environment}-2"
+  }
+}
+
+resource "aws_nat_gateway" "gateway_3" {
+  count             = var.nat == "gateway" ? 1 : 0
+  connectivity_type = "public"
+  allocation_id     = var.reserve_nat_eip ? aws_eip.nat_reserved_3.id : aws_eip.nat_dynamic_3.id
+  subnet_id         = aws_subnet.public_3.id
+  tags = {
+    "Name" = "${var.project}-${var.environment}-3"
   }
 }
 
@@ -341,11 +303,9 @@ resource "aws_route" "private_3" {
   network_interface_id   = var.nat == "instance" ? aws_instance.nat_3[0].primary_network_interface_id : null
 }
 
-resource "aws_eip" "nat_reserved" {
-  count = var.reserve_nat_eip ? 3 : 0
-
+resource "aws_eip" "nat_reserved_1" {
   tags = {
-    Name = "${var.project}-${var.environment}-nat-${count.index + 1}-reserved"
+    Name = "${var.project}-${var.environment}-nat-reserved-1"
   }
 
   lifecycle {
@@ -353,14 +313,43 @@ resource "aws_eip" "nat_reserved" {
   }
 }
 
-resource "aws_eip" "nat_dynamic" {
-  count = var.reserve_nat_eip ? 0 : 3
-
+resource "aws_eip" "nat_reserved_2" {
   tags = {
-    Name = "${var.project}-${var.environment}-nat-${count.index + 1}-dynamic"
+    Name = "${var.project}-${var.environment}-nat-reserved-2"
+  }
+
+  lifecycle {
+    prevent_destroy = true
   }
 }
 
+resource "aws_eip" "nat_reserved_3" {
+  tags = {
+    Name = "${var.project}-${var.environment}-nat-reserved-3"
+  }
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+resource "aws_eip" "nat_dynamic_1" {
+  tags = {
+    Name = "${var.project}-${var.environment}-nat-dynamic-1"
+  }
+}
+
+resource "aws_eip" "nat_dynamic_2" {
+  tags = {
+    Name = "${var.project}-${var.environment}-nat-dynamic-2"
+  }
+}
+
+resource "aws_eip" "nat_dynamic_3" {
+  tags = {
+    Name = "${var.project}-${var.environment}-nat-dynamic-3"
+  }
+}
 
 # resource "aws_eip" "nat_1" {
 #   count = var.reserve_nat_eip ? 3 : 0
@@ -390,26 +379,20 @@ resource "aws_eip" "nat_dynamic" {
 #   }
 # }
 
-# resource "aws_eip_association" "nat_instance_1" {
-#   count         = var.nat == "instance" ? 1 : 0
-#   instance_id   = aws_instance.nat_1[0].id
-#   allocation_id = aws_eip.nat_1.id
-# }
+resource "aws_eip_association" "nat_instance_1" {
+  count         = var.nat == "instance" ? 1 : 0
+  instance_id   = aws_instance.nat_1[0].id
+  allocation_id = var.reserve_nat_eip ? aws_eip.nat_reserved_1.id : aws_eip.nat_dynamic_1.id
+}
 
-# resource "aws_eip_association" "nat_instance_2" {
-#   count         = var.nat == "instance" ? 1 : 0
-#   instance_id   = aws_instance.nat_2[0].id
-#   allocation_id = aws_eip.nat_2.id
-# }
+resource "aws_eip_association" "nat_instance_2" {
+  count         = var.nat == "instance" ? 1 : 0
+  instance_id   = aws_instance.nat_2[0].id
+  allocation_id = var.reserve_nat_eip ? aws_eip.nat_reserved_2.id : aws_eip.nat_dynamic_2.id
+}
 
-# resource "aws_eip_association" "nat_instance_3" {
-#   count         = var.nat == "instance" ? 1 : 0
-#   instance_id   = aws_instance.nat_3[0].id
-#   allocation_id = aws_eip.nat_3.id
-# }
-
-resource "aws_eip_association" "nat_instance" {
-  count         = var.nat == "instance" ? 3 : 0
-  instance_id   = aws_instance.nat[count.index].id
-  allocation_id = var.reserve_nat_eip ? aws_eip.nat[count.index].id : aws_eip.nat_dynamic[count.index].id
+resource "aws_eip_association" "nat_instance_3" {
+  count         = var.nat == "instance" ? 1 : 0
+  instance_id   = aws_instance.nat_3[0].id
+  allocation_id = var.reserve_nat_eip ? aws_eip.nat_reserved_3.id : aws_eip.nat_dynamic_3.id
 }
