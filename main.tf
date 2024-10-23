@@ -309,11 +309,8 @@ resource "aws_eip" "nat_1" {
   tags = {
     "Name" = "${var.project}-${var.environment}-nat-1"
   }
-  dynamic "lifecycle" {
-    for_each = var.reserve_nat_eip ? [1] : []
-    content {
-      prevent_destroy = true
-    }
+  lifecycle {
+    prevent_destroy = var.reserve_nat_eip
   }
 }
 
@@ -322,11 +319,8 @@ resource "aws_eip" "nat_2" {
   tags = {
     "Name" = "${var.project}-${var.environment}-nat-2"
   }
-  dynamic "lifecycle" {
-    for_each = var.reserve_nat_eip ? [1] : []
-    content {
-      prevent_destroy = true
-    }
+  lifecycle {
+    prevent_destroy = var.reserve_nat_eip
   }
 }
 
@@ -335,11 +329,8 @@ resource "aws_eip" "nat_3" {
   tags = {
     "Name" = "${var.project}-${var.environment}-nat-3"
   }
-  dynamic "lifecycle" {
-    for_each = var.reserve_nat_eip ? [1] : []
-    content {
-      prevent_destroy = true
-    }
+  lifecycle {
+    prevent_destroy = var.reserve_nat_eip
   }
 }
 
