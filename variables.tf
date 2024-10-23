@@ -52,3 +52,9 @@ variable "private_cidr_3" {
   type        = string
   description = "Private subnet cird"
 }
+
+variable "reserve_nat_eip" {
+  type        = bool
+  default     = false
+  description = "Reserve IP for NAT"
+}
