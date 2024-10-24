@@ -251,7 +251,6 @@ resource "aws_instance" "nat_3" {
   }
 }
 
-
 resource "aws_nat_gateway" "gateway_1" {
   count             = var.nat == "gateway" ? 1 : 0
   connectivity_type = "public"
@@ -281,7 +280,6 @@ resource "aws_nat_gateway" "gateway_3" {
     "Name" = "${var.project}-${var.environment}-3"
   }
 }
-
 
 resource "aws_route" "private_1" {
   route_table_id         = aws_route_table.private_1.id
