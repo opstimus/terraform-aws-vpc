@@ -310,7 +310,7 @@ resource "aws_eip" "nat_1" {
     "Name" = "${var.project}-${var.environment}-nat-1"
   }
   lifecycle {
-    prevent_destroy = var.reserve_nat_eip
+    prevent_destroy = true #set true for safety measures
   }
 }
 
@@ -320,7 +320,7 @@ resource "aws_eip" "nat_2" {
     "Name" = "${var.project}-${var.environment}-nat-2"
   }
   lifecycle {
-    prevent_destroy = var.reserve_nat_eip
+    prevent_destroy = true #set true for safety measures
   }
 }
 
@@ -330,7 +330,7 @@ resource "aws_eip" "nat_3" {
     "Name" = "${var.project}-${var.environment}-nat-3"
   }
   lifecycle {
-    prevent_destroy = var.reserve_nat_eip
+    prevent_destroy = true #set true for safety measures
   }
 }
 
