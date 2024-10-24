@@ -305,7 +305,6 @@ resource "aws_route" "private_3" {
 }
 
 resource "aws_eip" "nat_1" {
-  count = 1
   tags = {
     "Name" = "${var.project}-${var.environment}-nat-1"
   }
@@ -315,7 +314,6 @@ resource "aws_eip" "nat_1" {
 }
 
 resource "aws_eip" "nat_2" {
-  count = 1
   tags = {
     "Name" = "${var.project}-${var.environment}-nat-2"
   }
@@ -325,7 +323,6 @@ resource "aws_eip" "nat_2" {
 }
 
 resource "aws_eip" "nat_3" {
-  count = 1
   tags = {
     "Name" = "${var.project}-${var.environment}-nat-3"
   }
