@@ -4,7 +4,7 @@ resource "aws_vpc" "main" {
   cidr_block           = var.vpc_cidr
   enable_dns_hostnames = true
   enable_dns_support   = true
-  tags = var.tags
+  tags                 = var.tags
 }
 
 data "aws_availability_zones" "main" {
@@ -26,7 +26,7 @@ resource "aws_subnet" "public_1" {
   cidr_block              = var.public_cidr_1
   map_public_ip_on_launch = true
   vpc_id                  = aws_vpc.main.id
-  tags = var.tags
+  tags                    = var.tags
 }
 
 resource "aws_subnet" "public_2" {
@@ -34,7 +34,7 @@ resource "aws_subnet" "public_2" {
   cidr_block              = var.public_cidr_2
   map_public_ip_on_launch = true
   vpc_id                  = aws_vpc.main.id
-  tags = var.tags
+  tags                    = var.tags
 }
 
 resource "aws_subnet" "public_3" {
@@ -42,61 +42,57 @@ resource "aws_subnet" "public_3" {
   cidr_block              = var.public_cidr_3
   map_public_ip_on_launch = true
   vpc_id                  = aws_vpc.main.id
-  tags = var.tags
+  tags                    = var.tags
 }
 
 resource "aws_internet_gateway" "main" {
   vpc_id = aws_vpc.main.id
-
-  tags = var.tags
+  tags   = var.tags
 }
 resource "aws_default_route_table" "public" {
   default_route_table_id = aws_vpc.main.default_route_table_id
+  tags                   = var.tags
 
   route {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.main.id
   }
 
-  tags = var.tags
 }
 
 resource "aws_subnet" "private_1" {
   availability_zone = data.aws_availability_zones.main.names[0]
   cidr_block        = var.private_cidr_1
   vpc_id            = aws_vpc.main.id
-  tags = var.tags
+  tags              = var.tags
 }
 
 resource "aws_subnet" "private_2" {
   availability_zone = data.aws_availability_zones.main.names[1]
   cidr_block        = var.private_cidr_2
   vpc_id            = aws_vpc.main.id
-  tags = var.tags
+  tags              = var.tags
 }
 
 resource "aws_subnet" "private_3" {
   availability_zone = data.aws_availability_zones.main.names[2]
   cidr_block        = var.private_cidr_3
   vpc_id            = aws_vpc.main.id
-  tags = var.tags
+  tags              = var.tags
 }
 resource "aws_route_table" "private_1" {
   vpc_id = aws_vpc.main.id
-
-  tags = var.tags
+  tags   = var.tags
 }
 
 resource "aws_route_table" "private_2" {
   vpc_id = aws_vpc.main.id
-
-  tags = var.tags
+  tags   = var.tags
 }
 
 resource "aws_route_table" "private_3" {
   vpc_id = aws_vpc.main.id
-
-  tags = var.tags
+  tags   = var.tags
 }
 
 resource "aws_route_table_association" "private_1" {
@@ -119,6 +115,7 @@ resource "aws_security_group" "nat_instance" {
   name        = "${var.project}-${var.environment}-nat-instance"
   description = "${var.project}-${var.environment}-nat-instance"
   vpc_id      = aws_vpc.main.id
+  tags        = var.tags
 
   ingress {
     from_port   = 0
@@ -136,8 +133,6 @@ resource "aws_security_group" "nat_instance" {
     cidr_blocks      = ["0.0.0.0/0"]
     ipv6_cidr_blocks = ["::/0"]
   }
-
-  tags = var.tags
 }
 
 data "aws_ami" "amazon_linux_2" {
@@ -157,6 +152,7 @@ resource "aws_instance" "nat_1" {
   vpc_security_group_ids      = [aws_security_group.nat_instance[0].id]
   source_dest_check           = false
   subnet_id                   = aws_subnet.public_1.id
+  tags                        = var.tags
   user_data_replace_on_change = true
   user_data = trimspace(
     <<EOF
@@ -172,8 +168,6 @@ resource "aws_instance" "nat_1" {
     http_endpoint = "enabled"
     http_tokens   = "required"
   }
-
-  tags = var.tags
 }
 
 resource "aws_instance" "nat_2" {
@@ -183,6 +177,7 @@ resource "aws_instance" "nat_2" {
   vpc_security_group_ids      = [aws_security_group.nat_instance[0].id]
   source_dest_check           = false
   subnet_id                   = aws_subnet.public_2.id
+  tags                        = var.tags
   user_data_replace_on_change = true
   user_data = trimspace(
     <<EOF
@@ -198,8 +193,6 @@ resource "aws_instance" "nat_2" {
     http_endpoint = "enabled"
     http_tokens   = "required"
   }
-
-  tags = var.tags
 }
 
 resource "aws_instance" "nat_3" {
@@ -209,6 +202,7 @@ resource "aws_instance" "nat_3" {
   vpc_security_group_ids      = [aws_security_group.nat_instance[0].id]
   source_dest_check           = false
   subnet_id                   = aws_subnet.public_3.id
+  tags                        = var.tags
   user_data_replace_on_change = true
   user_data = trimspace(
     <<EOF
@@ -224,8 +218,6 @@ resource "aws_instance" "nat_3" {
     http_endpoint = "enabled"
     http_tokens   = "required"
   }
-
-  tags = var.tags
 }
 
 resource "aws_nat_gateway" "gateway_1" {
@@ -233,7 +225,7 @@ resource "aws_nat_gateway" "gateway_1" {
   connectivity_type = "public"
   allocation_id     = aws_eip.nat_1.allocation_id
   subnet_id         = aws_subnet.public_1.id
-  tags = var.tags
+  tags              = var.tags
 }
 
 resource "aws_nat_gateway" "gateway_2" {
@@ -241,7 +233,7 @@ resource "aws_nat_gateway" "gateway_2" {
   connectivity_type = "public"
   allocation_id     = aws_eip.nat_2.allocation_id
   subnet_id         = aws_subnet.public_2.id
-  tags = var.tags
+  tags              = var.tags
 }
 
 resource "aws_nat_gateway" "gateway_3" {
@@ -249,7 +241,7 @@ resource "aws_nat_gateway" "gateway_3" {
   connectivity_type = "public"
   allocation_id     = aws_eip.nat_3.allocation_id
   subnet_id         = aws_subnet.public_3.id
-  tags = var.tags
+  tags              = var.tags
 }
 
 resource "aws_route" "private_1" {
