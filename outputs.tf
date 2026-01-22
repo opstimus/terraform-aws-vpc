@@ -47,13 +47,13 @@ resource "aws_ssm_parameter" "private_subnets_ids" {
 }
 
 resource "aws_ssm_parameter" "public_route_tables_ids" {
-  name  = "/${var.project}/${var.environment}/central/vpc/routeTableIds"
+  name  = "/${var.project}/${var.environment}/central/vpc/publicRouteTableIds"
   type  = "StringList"
   value = aws_default_route_table.public.id
 }
 
 resource "aws_ssm_parameter" "private_route_tables_ids" {
-  name  = "/${var.project}/${var.environment}/central/vpc/routeTableIds"
+  name  = "/${var.project}/${var.environment}/central/vpc/privateRouteTableIds"
   type  = "StringList"
   value = join(",", [aws_route_table.private_1.id, aws_route_table.private_2.id, aws_route_table.private_3.id])
 }
