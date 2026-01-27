@@ -176,23 +176,6 @@ resource "aws_security_group" "nat_instance" {
   description = "${var.project}-${var.environment}-nat-instance"
   vpc_id      = aws_vpc.main.id
 
-  ingress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = [var.vpc_cidr]
-  }
-
-
-  # All traffic enabled for outbound. Restrict if required
-  egress {
-    from_port        = 0
-    to_port          = 0
-    protocol         = "-1"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-  }
-
   tags = merge(
     {
       Name = "${var.project}-${var.environment}-nat-instance"
@@ -200,6 +183,27 @@ resource "aws_security_group" "nat_instance" {
     var.tags
   )
 
+}
+
+resource "aws_security_group_rule" "nat_ingress" {
+  count             = var.nat == "instance" ? 1 : 0
+  type              = "ingress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = [var.vpc_cidr]
+  security_group_id = aws_security_group.nat_instance[0].id
+}
+
+resource "aws_security_group_rule" "nat_egress" {
+  count             = var.nat == "instance" ? 1 : 0
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+  ipv6_cidr_blocks  = ["::/0"]
+  security_group_id = aws_security_group.nat_instance[0].id
 }
 
 data "aws_ami" "amazon_linux_2" {
