@@ -195,8 +195,8 @@ resource "aws_vpc_security_group_ingress_rule" "nat_ingress" {
 resource "aws_vpc_security_group_egress_rule" "nat_egress" {
   count             = var.nat == "instance" ? 1 : 0
   ip_protocol       = "-1"
-  cidr_ipv4         = ["0.0.0.0/0"]
-  cidr_ipv6         = ["::/0"]
+  cidr_ipv4         = "0.0.0.0/0"
+  cidr_ipv6         = "::/0"
   security_group_id = aws_security_group.nat_instance[0].id
 }
 
