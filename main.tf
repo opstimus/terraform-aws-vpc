@@ -1,3 +1,5 @@
+data "aws_region" "current" {}
+
 resource "aws_vpc" "main" {
   cidr_block           = var.vpc_cidr
   enable_dns_hostnames = true
@@ -434,10 +436,6 @@ resource "aws_eip_association" "nat_instance" {
   allocation_id = [aws_eip.nat_1.id, aws_eip.nat_2.id, aws_eip.nat_3.id][count.index]
 }
 
-data "aws_region" "current" {
-  count = var.enable_ssm_vpc_endpoints ? 1 : 0
-}
-
 resource "aws_security_group" "ssm_endpoints" {
   count       = var.enable_ssm_vpc_endpoints ? 1 : 0
   name        = "${var.project}-${var.environment}-ssm-endpoints"
@@ -501,7 +499,7 @@ resource "aws_vpc_endpoint" "ssm" {
   count = var.enable_ssm_vpc_endpoints ? 1 : 0
 
   vpc_id              = aws_vpc.main.id
-  service_name        = "com.amazonaws.${data.aws_region.current[0].name}.ssm"
+  service_name        = "com.amazonaws.${data.aws_region.current.name}.ssm"
   vpc_endpoint_type   = "Interface"
   subnet_ids          = [aws_subnet.private_1.id, aws_subnet.private_2.id, aws_subnet.private_3.id]
   security_group_ids  = [aws_security_group.ssm_endpoints[0].id]
