@@ -467,34 +467,6 @@ resource "aws_vpc_security_group_ingress_rule" "ssm_endpoints_ingress" {
   )
 }
 
-resource "aws_vpc_security_group_egress_rule" "ssm_endpoints_egress_ipv4" {
-  count             = var.enable_ssm_vpc_endpoints ? 1 : 0
-  security_group_id = aws_security_group.ssm_endpoints[0].id
-  ip_protocol       = "-1"
-  cidr_ipv4         = "0.0.0.0/0"
-
-  tags = merge(
-    {
-      Name = "${var.project}-${var.environment}-ssm-endpoints-egress-ipv4"
-    },
-    var.tags
-  )
-}
-
-resource "aws_vpc_security_group_egress_rule" "ssm_endpoints_egress_ipv6" {
-  count             = var.enable_ssm_vpc_endpoints ? 1 : 0
-  security_group_id = aws_security_group.ssm_endpoints[0].id
-  ip_protocol       = "-1"
-  cidr_ipv6         = "::/0"
-
-  tags = merge(
-    {
-      Name = "${var.project}-${var.environment}-ssm-endpoints-egress-ipv6"
-    },
-    var.tags
-  )
-}
-
 resource "aws_vpc_endpoint" "ssm" {
   count = var.enable_ssm_vpc_endpoints ? 1 : 0
 
