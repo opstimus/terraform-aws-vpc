@@ -306,7 +306,8 @@ resource "aws_instance" "nat" {
   user_data = trimspace(
     <<EOF
     #!/bin/bash
-    sudo sysctl -w net.ipv4.ip_forward=1
+    echo "net.ipv4.ip_forward=1" | sudo tee /etc/sysctl.d/99-nat.conf
+    sudo sysctl -p /etc/sysctl.d/99-nat.conf
     sudo dnf -y install iptables-services
     sudo /sbin/iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
     sudo service iptables save
