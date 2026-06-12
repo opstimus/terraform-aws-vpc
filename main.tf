@@ -303,13 +303,14 @@ resource "aws_instance" "nat" {
   source_dest_check           = false
   subnet_id                   = [aws_subnet.public_1.id, aws_subnet.public_2.id, aws_subnet.public_3.id][count.index]
   user_data_replace_on_change = true
-  user_data = <<-EOF
+  user_data                   = <<-EOF
     #!/bin/bash
     set -xe
     dnf install -y iptables
     echo "net.ipv4.ip_forward=1" | tee /etc/sysctl.d/99-nat.conf
     sysctl -p /etc/sysctl.d/99-nat.conf
-    iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+    ETH=$(ip route show default | awk '{print $5}')
+    iptables -t nat -A POSTROUTING -o $ETH -j MASQUERADE
     mkdir -p /etc/iptables
     iptables-save > /etc/iptables/rules.v4
     printf '[Unit]\nDescription=Restore iptables NAT rules\nAfter=network.target\n\n[Service]\nType=oneshot\nExecStart=/sbin/iptables-restore /etc/iptables/rules.v4\nRemainAfterExit=yes\n\n[Install]\nWantedBy=multi-user.target\n' > /etc/systemd/system/iptables-restore.service
