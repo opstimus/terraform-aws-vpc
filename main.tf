@@ -559,7 +559,7 @@ resource "aws_vpc_endpoint" "ssm" {
   count = var.enable_ssm_vpc_endpoints ? 1 : 0
 
   vpc_id              = aws_vpc.main.id
-  service_name        = "com.amazonaws.${data.aws_region.current.id}.ssm"
+  service_name        = "com.amazonaws.${data.aws_region.current.region}.ssm"
   vpc_endpoint_type   = "Interface"
   subnet_ids          = [aws_subnet.private_1.id, aws_subnet.private_2.id, aws_subnet.private_3.id]
   security_group_ids  = [aws_security_group.ssm_endpoints[0].id]
