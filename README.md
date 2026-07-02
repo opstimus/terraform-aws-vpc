@@ -1,3 +1,12 @@
+> ⚠️ **Moved to the monorepo.**
+> This module now lives in [`opstimus/terraform-modules`](https://github.com/opstimus/terraform-modules) at `modules/aws-vpc`.
+>
+> ```hcl
+> source = "git::https://github.com/opstimus/terraform-modules.git//modules/aws-vpc?ref=aws-vpc/v2.2.2"
+> ```
+>
+> This repository remains for existing consumers; new development happens in the monorepo.
+
 # VPC Module
 
 ## Description
